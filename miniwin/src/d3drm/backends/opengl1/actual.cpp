@@ -121,6 +121,7 @@ void GL11_DestroyMesh(GLMeshCacheEntry& cache)
 void GL11_BeginFrame(const Matrix4x4* projection)
 {
 	glDisable(GL_BLEND);
+	glDisable(GL_POLYGON_STIPPLE);
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
 	glEnable(GL_LIGHTING);
@@ -194,8 +195,15 @@ void GL11_UploadLight(int lightIdx, GL11_BridgeSceneLight* l)
 
 void GL11_EnableTransparency()
 {
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	uint32_t stipplePattern[] = {0x55555555, 0xAAAAAAAA, 0x55555555, 0xAAAAAAAA, 0x55555555, 0xAAAAAAAA, 0x55555555, 0xAAAAAAAA,
+		0x55555555, 0xAAAAAAAA, 0x55555555, 0xAAAAAAAA, 0x55555555, 0xAAAAAAAA, 0x55555555, 0xAAAAAAAA,
+		0x55555555, 0xAAAAAAAA, 0x55555555, 0xAAAAAAAA, 0x55555555, 0xAAAAAAAA, 0x55555555, 0xAAAAAAAA,
+		0x55555555, 0xAAAAAAAA, 0x55555555, 0xAAAAAAAA, 0x55555555, 0xAAAAAAAA, 0x55555555, 0xAAAAAAAA
+	};
+	glPolygonStipple((uint8_t*)stipplePattern);
+	glEnable(GL_POLYGON_STIPPLE);
 	glDepthMask(GL_FALSE);
 }
 
@@ -302,6 +310,7 @@ void GL11_Draw2DImage(
 {
 	glDisable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
+	glDisable(GL_POLYGON_STIPPLE);
 
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
